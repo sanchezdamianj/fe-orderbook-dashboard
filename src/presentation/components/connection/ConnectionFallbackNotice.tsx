@@ -2,19 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useOrderbookStore } from "@/presentation/stores/OrderbookStore";
-import { useShallow } from "zustand/react/shallow";
 
 export function ConnectionFallbackNotice() {
-  const { hasFallback } = useOrderbookStore(
-    useShallow((state) => ({
-      hasFallback: state.hasFallback,
-    }))
-  );
-
+  const hasFallback = useOrderbookStore((state) => state.hasFallback);
   const [showNotice, setShowNotice] = useState(false);
 
   useEffect(() => {
-    if (hasFallback && !showNotice) {
+    if (hasFallback) {
       setShowNotice(true);
 
       const timer = setTimeout(() => {
@@ -23,7 +17,11 @@ export function ConnectionFallbackNotice() {
 
       return () => clearTimeout(timer);
     }
-  }, [hasFallback, showNotice]);
+  }, [hasFallback]);
+
+  const handleClose = () => {
+    setShowNotice(false);
+  };
 
   if (!showNotice) {
     return null;
@@ -57,7 +55,7 @@ export function ConnectionFallbackNotice() {
             </p>
           </div>
           <button
-            onClick={() => setShowNotice(false)}
+            onClick={handleClose}
             className="flex-shrink-0 text-text-muted hover:text-text-primary transition-colors"
           >
             <svg

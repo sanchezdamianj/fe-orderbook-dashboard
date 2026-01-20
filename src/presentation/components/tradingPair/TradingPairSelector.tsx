@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useOrderbookStore } from "@/presentation/stores/OrderbookStore";
 import { TradingPairsConfig } from "@/infrastructure/config/TradingPairsConfig";
-import { TradingPairButton } from "./TradingPairButton";
-import { TradingPairDropdown } from "./TradingPairDropdown";
+import { TradingPairButton } from "./components/TradingPairButton";
+import { TradingPairDropdown } from "./components/TradingPairDropdown";
 
 export function TradingPairSelector() {
   const [isOpen, setIsOpen] = useState(false);

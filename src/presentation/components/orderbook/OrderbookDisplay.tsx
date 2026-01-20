@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useOrderbookStore } from "@/presentation/stores/OrderbookStore";
-import { OrderbookHeader } from "./OrderbookHeader";
-import { OrderbookAsks } from "./OrderbookAsks";
-import { OrderbookSpread } from "./OrderbookSpread";
-import { OrderbookBids } from "./OrderbookBids";
-import { OrderbookError } from "./OrderbookError";
-import { OrderbookLoading } from "./OrderbookLoading";
+import { OrderbookHeader } from "./components/OrderbookHeader";
+import { OrderbookAsks } from "./components/OrderbookAsks";
+import { OrderbookSpread } from "./components/OrderbookSpread";
+import { OrderbookBids } from "./components/OrderbookBids";
+import { OrderbookError } from "./components/OrderbookError";
+import { OrderbookLoading } from "./components/OrderbookLoading";
 import { ApiConfig } from "@/infrastructure/config/ApiConfig";
 
 export function OrderbookDisplay() {

@@ -19,6 +19,7 @@ interface OrderbookStoreState {
   connectionMode: ConnectionMode;
   isConnected: boolean;
   hasFallback: boolean;
+  hasShownFallbackNotice: boolean;
   retryAttempt: number;
 }
 
@@ -49,6 +50,7 @@ export const useOrderbookStore = create<OrderbookStore>((set, get) => ({
   connectionMode: "websocket",
   isConnected: false,
   hasFallback: false,
+  hasShownFallbackNotice: false,
   retryAttempt: 0,
 
   selectTradingPair: (pair: TradingPair) => {
@@ -91,11 +93,13 @@ export const useOrderbookStore = create<OrderbookStore>((set, get) => ({
           console.warn("[Store] WebSocket error, falling back to polling:", error.message);
           
           const currentRetry = get().retryAttempt;
+          const hasShownNotice = get().hasShownFallbackNotice;
           
           set({
             connectionMode: "polling",
             isConnected: false,
-            hasFallback: true,
+            hasFallback: !hasShownNotice,
+            hasShownFallbackNotice: true,
             retryAttempt: currentRetry + 1,
           });
           
@@ -141,6 +145,7 @@ export const useOrderbookStore = create<OrderbookStore>((set, get) => ({
       isConnected: false,
       orderbook: null,
       retryAttempt: 0,
+      hasShownFallbackNotice: false,
     });
 
     get().fetchOrderbook();
