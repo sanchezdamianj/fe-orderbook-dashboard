@@ -130,8 +130,6 @@ export class BinanceApiClient {
 4. **Interface Segregation**: Focused interfaces (IOrderbookRepository)
 5. **Dependency Inversion**: Depend on abstractions, not concretions
 
-## Time Estimate
-**~2 hours**
 
 ## Next Steps
 → **Iteration 3:** Build presentation layer (React components + state management)

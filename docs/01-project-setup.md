@@ -55,10 +55,6 @@ npm install -D @types/node @types/react @types/react-dom
 ✅ Dockerfile created
 ✅ Git repository initialized
 
-## Time Estimate
-**~30 minutes**
-
----
 
 ## Commands Executed
 ```bash

@@ -245,8 +245,6 @@ npm run test OrderbookLevel.test.ts
 ✅ Coverage reporting
 ✅ CI-ready test suite
 
-## Time Estimate
-**~2-3 hours**
 
 ## Next Steps
 → **Iteration 6:** Docker deployment & final polish
