@@ -1,6 +1,6 @@
 export function DashboardSidebar() {
   return (
-    <aside className="hidden lg:flex flex-col gap-3 overflow-y-auto pr-2" role="complementary" aria-label="Information sidebar">
+    <aside className="hidden lg:flex flex-col gap-3 overflow-y-auto" role="complementary" aria-label="Information sidebar">
       <div className="rounded-lg border border-border bg-surface p-4">
         <h2 className="mb-2 text-sm font-semibold text-text-primary">
           About

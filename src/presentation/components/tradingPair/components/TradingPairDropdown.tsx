@@ -14,9 +14,10 @@ export function TradingPairDropdown({
 }: TradingPairDropdownProps) {
   return (
     <div 
-      className="absolute left-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-surface shadow-xl"
+      className="absolute right-0 top-full z-20 mt-2 w-full sm:w-48 overflow-hidden rounded-lg border border-border bg-surface shadow-xl"
       role="listbox"
       aria-label="Trading pair options"
+      id="trading-pair-dropdown"
     >
       <div className="max-h-80 overflow-y-auto">
         {pairs.map((pair) => (

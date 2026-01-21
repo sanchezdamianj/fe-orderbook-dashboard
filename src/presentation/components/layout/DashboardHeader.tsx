@@ -4,8 +4,8 @@ import { StaleDataIndicator } from "../connection/StaleDataIndicator";
 
 export function DashboardHeader() {
   return (
-    <header className="border-b border-border/50 py-3.5 shrink-0" role="banner">
-      <div className="flex items-center justify-between gap-4">
+    <header className="py-3.5 shrink-0" role="banner">
+      <div className="flex items-center justify-between gap-4 pb-3.5 border-b border-border/50">
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-normal tracking-tight text-brand">
             orderbook

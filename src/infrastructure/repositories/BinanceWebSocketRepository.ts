@@ -11,18 +11,19 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private reconnectAttempts = 0;
   private readonly MAX_RECONNECT_ATTEMPTS = 5;
-  private readonly BASE_RECONNECT_DELAY = 1000;
-  private readonly MAX_RECONNECT_DELAY = 30000;
+  private readonly RETRY_DELAYS = [1000, 1000, 2000, 3000, 5000];
   private lastMessageTime: number = Date.now();
   private latencyCallback: ((latency: number) => void) | null = null;
+  private isReconnecting = false;
 
   async fetchOrderbook(symbol: string): Promise<Orderbook> {
-    // If symbol changed, close existing connection
     if (this.currentSymbol !== symbol && this.ws) {
       this.disconnect();
     }
 
     this.currentSymbol = symbol;
+    this.reconnectAttempts = 0;
+    this.isReconnecting = false;
 
     const initialOrderbook = await this.fetchInitialSnapshot(symbol);
 
@@ -88,6 +89,7 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
       this.ws.onopen = () => {
         console.log(`[WebSocket] Connected to ${wsSymbol}`);
         this.reconnectAttempts = 0;
+        this.isReconnecting = false;
       };
 
       this.ws.onmessage = (event) => {
@@ -99,12 +101,8 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
           message: error instanceof Error ? error.message : "Unknown error",
           type: error.type || "error",
           timestamp: new Date().toISOString(),
+          attempt: this.reconnectAttempts,
         });
-        
-        // Notify error callback if exists
-        if (this.onError) {
-          this.onError(new Error("WebSocket connection failed"));
-        }
       };
 
       this.ws.onclose = () => {
@@ -162,11 +160,15 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
   }
 
   private handleReconnect(): void {
+    if (this.isReconnecting) {
+      return;
+    }
+
     if (this.reconnectAttempts >= this.MAX_RECONNECT_ATTEMPTS) {
-      console.error("[WebSocket] Max reconnection attempts reached. Falling back to polling.");
+      console.error("[WebSocket] All reconnection attempts exhausted. Switching to polling.");
       
       if (this.onError) {
-        this.onError(new Error("WebSocket: Max reconnection attempts reached"));
+        this.onError(new Error("WebSocket: All reconnection attempts failed"));
       }
       return;
     }
@@ -175,23 +177,20 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
       return;
     }
 
+    this.isReconnecting = true;
+    const retryDelay = this.RETRY_DELAYS[this.reconnectAttempts] || 5000;
     this.reconnectAttempts++;
-    const backoffDelay = this.getExponentialBackoffDelay(this.reconnectAttempts);
     
     console.log(
-      `[WebSocket] Reconnecting in ${backoffDelay}ms... (attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`
+      `[WebSocket] Retrying connection in ${retryDelay}ms... (attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`
     );
 
     this.reconnectTimeout = setTimeout(() => {
+      this.isReconnecting = false;
       if (this.currentSymbol) {
         this.setupWebSocket(this.currentSymbol);
       }
-    }, backoffDelay);
-  }
-
-  private getExponentialBackoffDelay(attempt: number): number {
-    const delay = this.BASE_RECONNECT_DELAY * Math.pow(2, attempt - 1);
-    return Math.min(delay, this.MAX_RECONNECT_DELAY);
+    }, retryDelay);
   }
 
   private disconnect(): void {
@@ -206,5 +205,12 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
     }
 
     this.reconnectAttempts = 0;
+    this.isReconnecting = false;
+  }
+  
+  resetConnection(): void {
+    this.disconnect();
+    this.reconnectAttempts = 0;
+    this.isReconnecting = false;
   }
 }
