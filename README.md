@@ -3,6 +3,7 @@
 > Real-time cryptocurrency orderbook viewer with **Clean Architecture**, **SOLID principles**, and modern React stack.
 
 ![Orderbook Dashboard](./design-snapshot.png)
+![Orderbook Dashboard Mobile](./design-snapshot-mb.png)
 
 ## 🏗️ Architecture
 
