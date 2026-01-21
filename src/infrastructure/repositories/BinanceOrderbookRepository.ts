@@ -23,14 +23,15 @@ export class BinanceOrderbookRepository implements IOrderbookRepository {
   }): Orderbook {
     const visibleLevels = ApiConfig.getVisibleLevels();
 
-    const bids = response.bids
-      .slice(0, visibleLevels)
-      .map(([price, quantity]) => OrderbookLevel.create(price, quantity));
-
-    const asks = response.asks
-      .slice(0, visibleLevels)
-      .map(([price, quantity]) => OrderbookLevel.create(price, quantity));
+    const bids = this.mapLevels(response.bids, visibleLevels);
+    const asks = this.mapLevels(response.asks, visibleLevels);
 
     return new Orderbook(bids, asks, response.lastUpdateId);
+  }
+
+  private mapLevels(levels: [string, string][], limit: number) {
+    return levels
+      .slice(0, limit)
+      .map(([price, quantity]) => OrderbookLevel.create(price, quantity));
   }
 }

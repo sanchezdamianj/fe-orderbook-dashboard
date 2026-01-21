@@ -16,7 +16,6 @@ describe("OrderbookLevel Component", () => {
       render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.12345}
           barWidth={75}
           side="bid"
         />
@@ -25,7 +24,6 @@ describe("OrderbookLevel Component", () => {
       // Assert
       expect(screen.getByText("100.50")).toBeInTheDocument();
       expect(screen.getByText("1.25000")).toBeInTheDocument();
-      expect(screen.getByText("5.12345")).toBeInTheDocument();
     });
 
     it("should render ask level correctly", () => {
@@ -33,7 +31,6 @@ describe("OrderbookLevel Component", () => {
       render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={3.67890}
           barWidth={50}
           side="ask"
         />
@@ -42,7 +39,6 @@ describe("OrderbookLevel Component", () => {
       // Assert
       expect(screen.getByText("100.50")).toBeInTheDocument();
       expect(screen.getByText("1.25000")).toBeInTheDocument();
-      expect(screen.getByText("3.67890")).toBeInTheDocument();
     });
 
     it("should apply bid color classes", () => {
@@ -50,7 +46,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.0}
           barWidth={75}
           side="bid"
         />
@@ -69,7 +64,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.0}
           barWidth={75}
           side="ask"
         />
@@ -88,7 +82,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.0}
           barWidth={60}
           side="bid"
         />
@@ -104,7 +97,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={0.1}
           barWidth={0}
           side="bid"
         />
@@ -120,7 +112,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={10.0}
           barWidth={100}
           side="bid"
         />
@@ -139,7 +130,6 @@ describe("OrderbookLevel Component", () => {
       render(
         <OrderbookLevelComponent
           level={largeLevel}
-          totalQty={99999.99999}
           barWidth={80}
           side="bid"
         />
@@ -148,7 +138,6 @@ describe("OrderbookLevel Component", () => {
       // Assert
       expect(screen.getByText("12,345.67")).toBeInTheDocument();
       expect(screen.getByText("9,876.54321")).toBeInTheDocument();
-      expect(screen.getByText("99999.99999")).toBeInTheDocument(); // No thousand separator on Total column
     });
 
     it("should format small numbers correctly", () => {
@@ -159,7 +148,6 @@ describe("OrderbookLevel Component", () => {
       render(
         <OrderbookLevelComponent
           level={smallLevel}
-          totalQty={0.00005}
           barWidth={10}
           side="ask"
         />
@@ -168,17 +156,15 @@ describe("OrderbookLevel Component", () => {
       // Assert
       expect(screen.getByText("0.00")).toBeInTheDocument();
       expect(screen.getByText("0.00001")).toBeInTheDocument();
-      expect(screen.getByText("0.00005")).toBeInTheDocument();
     });
   });
 
   describe("layout", () => {
-    it("should use grid layout with 3 columns", () => {
+    it("should use grid layout with 2 columns", () => {
       // Act
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.0}
           barWidth={75}
           side="bid"
         />
@@ -186,7 +172,7 @@ describe("OrderbookLevel Component", () => {
 
       // Assert
       const gridElement = container.firstChild;
-      expect(gridElement).toHaveClass("grid", "grid-cols-3");
+      expect(gridElement).toHaveClass("grid", "grid-cols-2");
     });
 
     it("should position depth bar absolutely", () => {
@@ -194,7 +180,6 @@ describe("OrderbookLevel Component", () => {
       const { container } = render(
         <OrderbookLevelComponent
           level={mockLevel}
-          totalQty={5.0}
           barWidth={75}
           side="bid"
         />

@@ -17,6 +17,9 @@ export function TradingPairItem({ pair, isSelected, onSelect }: TradingPairItemP
         "group",
         isSelected && "bg-primary-muted border-l-2 border-primary"
       )}
+      role="option"
+      aria-selected={isSelected}
+      aria-label={`Select ${pair.displayName}`}
     >
       <span className={cn(
         "font-medium transition-all",

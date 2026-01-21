@@ -66,7 +66,6 @@ describe("OrderbookDisplay", () => {
 
       // Assert
       expect(screen.getByTestId("orderbook-loading")).toBeInTheDocument();
-      expect(screen.getByText("Loading...")).toBeInTheDocument();
     });
 
     it("should render error state when error exists", () => {

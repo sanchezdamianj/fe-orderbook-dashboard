@@ -12,12 +12,17 @@ export function OrderbookLevel({
   side,
   barWidth,
 }: OrderbookLevelProps) {
+  const sideLabel = side === "bid" ? "Buy" : "Sell";
+  const ariaLabel = `${sideLabel} order: ${level.formatPrice()} at ${level.formatQuantity()}`;
+  
   return (
     <div
       className={cn(
         "relative grid grid-cols-2 gap-2 px-3 py-1 font-mono text-sm transition-all flex-shrink-0",
         side === "bid" ? "hover:bg-bid-bg" : "hover:bg-ask-bg"
       )}
+      role="listitem"
+      aria-label={ariaLabel}
     >
       <div
         className={cn(

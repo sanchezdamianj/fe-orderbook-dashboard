@@ -4,9 +4,8 @@ import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useOrderbookStore } from "@/presentation/stores/OrderbookStore";
 import { OrderbookHeader } from "./components/OrderbookHeader";
-import { OrderbookAsks } from "./components/OrderbookAsks";
+import { OrderbookLevels } from "./components/OrderbookLevels";
 import { OrderbookSpread } from "./components/OrderbookSpread";
-import { OrderbookBids } from "./components/OrderbookBids";
 import { OrderbookError } from "./components/OrderbookError";
 import { OrderbookLoading } from "./components/OrderbookLoading";
 import { ApiConfig } from "@/infrastructure/config/ApiConfig";
@@ -47,11 +46,16 @@ export function OrderbookDisplay() {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-lg border border-border bg-surface overflow-hidden">
+    <div 
+      className="flex h-full flex-col rounded-lg border border-border bg-surface overflow-hidden"
+      role="region"
+      aria-label="Live Orderbook"
+      aria-live="polite"
+    >
       <OrderbookHeader />
-      <OrderbookAsks orderbook={orderbook} />
+      <OrderbookLevels orderbook={orderbook} side="ask" />
       <OrderbookSpread orderbook={orderbook} />
-      <OrderbookBids orderbook={orderbook} />
+      <OrderbookLevels orderbook={orderbook} side="bid" />
     </div>
   );
 }

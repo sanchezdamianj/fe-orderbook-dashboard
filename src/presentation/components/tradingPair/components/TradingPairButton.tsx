@@ -12,6 +12,9 @@ export function TradingPairButton({ pair, isOpen, onClick }: TradingPairButtonPr
     <button
       onClick={onClick}
       className="flex items-center gap-2.5 rounded-lg bg-[#0f0f0f] px-4 py-2 border border-border/50 text-text-primary transition-all hover:bg-surface-hover hover:border-primary/30"
+      aria-expanded={isOpen}
+      aria-haspopup="listbox"
+      aria-label={`Select trading pair. Currently selected: ${pair.displayName}`}
     >
       <div className="flex items-center gap-2">
         <span className="text-base font-bold text-primary">{pair.baseAsset}</span>

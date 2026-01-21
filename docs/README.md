@@ -9,7 +9,6 @@ This directory contains detailed documentation of the **6 major development iter
 ## Iteration Breakdown
 
 ### [01 - Project Setup](./01-project-setup.md)
-**Time:** ~30 minutes
 
 Foundation phase: Technology stack selection, project initialization, configuration files, and development environment setup.
 
@@ -22,7 +21,6 @@ Foundation phase: Technology stack selection, project initialization, configurat
 ---
 
 ### [02 - Clean Architecture Setup](./02-clean-architecture-setup.md)
-**Time:** ~2 hours
 
 Architecture design: Implementing Clean Architecture layers with SOLID principles, domain modeling, and dependency injection.
 
@@ -35,7 +33,6 @@ Architecture design: Implementing Clean Architecture layers with SOLID principle
 ---
 
 ### [03 - Presentation Layer](./03-presentation-layer.md)
-**Time:** ~3 hours
 
 UI development: React components, Zustand state management, component composition, and styling with Tailwind.
 
@@ -48,7 +45,6 @@ UI development: React components, Zustand state management, component compositio
 ---
 
 ### [04 - Live Updates & WebSocket](./04-live-updates-websocket.md)
-**Time:** ~2-3 hours
 
 Real-time data: Polling implementation, WebSocket integration, automatic fallback mechanism, and retry logic.
 
@@ -61,7 +57,6 @@ Real-time data: Polling implementation, WebSocket integration, automatic fallbac
 ---
 
 ### [05 - Testing & Quality](./05-testing-quality.md)
-**Time:** ~2-3 hours
 
 Quality assurance: Unit tests with Vitest, React Testing Library, coverage reporting, and CI readiness.
 
@@ -74,7 +69,6 @@ Quality assurance: Unit tests with Vitest, React Testing Library, coverage repor
 ---
 
 ### [06 - Deployment & Polish](./06-deployment-polish.md)
-**Time:** ~2 hours
 
 Production readiness: Multi-stage Docker build, UI/UX refinements, performance optimizations, and final verification.
 
@@ -85,10 +79,6 @@ Production readiness: Multi-stage Docker build, UI/UX refinements, performance o
 - Smooth animations
 
 ---
-
-## Total Project Time
-
-**~12-14 hours** (including iterations, testing, and polish)
 
 ## Engineering Principles Applied
 

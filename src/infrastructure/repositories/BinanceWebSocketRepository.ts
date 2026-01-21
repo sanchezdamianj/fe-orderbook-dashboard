@@ -1,6 +1,7 @@
 import type { IOrderbookRepository } from "@/domain/repositories/IOrderbookRepository";
 import { Orderbook } from "@/domain/entities/Orderbook";
 import { OrderbookLevel } from "@/domain/valueObjects/OrderbookLevel";
+import { ApiConfig } from "../config/ApiConfig";
 
 export class BinanceWebSocketRepository implements IOrderbookRepository {
   private ws: WebSocket | null = null;
@@ -9,8 +10,11 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
   private onError: ((error: Error) => void) | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private reconnectAttempts = 0;
-  private readonly MAX_RECONNECT_ATTEMPTS = 3;
-  private readonly RECONNECT_DELAY = 3000;
+  private readonly MAX_RECONNECT_ATTEMPTS = 5;
+  private readonly BASE_RECONNECT_DELAY = 1000;
+  private readonly MAX_RECONNECT_DELAY = 30000;
+  private lastMessageTime: number = Date.now();
+  private latencyCallback: ((latency: number) => void) | null = null;
 
   async fetchOrderbook(symbol: string): Promise<Orderbook> {
     // If symbol changed, close existing connection
@@ -37,6 +41,14 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
     this.onError = onError;
   }
 
+  setLatencyCallback(callback: (latency: number) => void): void {
+    this.latencyCallback = callback;
+  }
+
+  getLastMessageTime(): number {
+    return this.lastMessageTime;
+  }
+
   unsubscribe(): void {
     this.callback = null;
     this.disconnect();
@@ -52,6 +64,7 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
     }
 
     const data = await response.json();
+    this.lastMessageTime = Date.now();
 
     return new Orderbook(
       data.bids.map(([price, qty]: [string, string]) =>
@@ -66,7 +79,8 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
 
   private setupWebSocket(symbol: string): void {
     const wsSymbol = symbol.toLowerCase();
-    const wsUrl = `wss://stream.binance.com:9443/ws/${wsSymbol}@depth10@1000ms`;
+    const wsBaseUrl = ApiConfig.getWebSocketBaseUrl();
+    const wsUrl = `${wsBaseUrl}/${wsSymbol}@depth10@1000ms`;
 
     try {
       this.ws = new WebSocket(wsUrl);
@@ -104,6 +118,8 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
   }
 
   private handleMessage(data: string): void {
+    const receiveTime = Date.now();
+    
     try {
       const message = JSON.parse(data);
 
@@ -121,6 +137,13 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
             ),
           message.lastUpdateId || Date.now()
         );
+
+        this.lastMessageTime = receiveTime;
+        
+        const latency = message.E ? receiveTime - message.E : 0;
+        if (this.latencyCallback && latency > 0) {
+          this.latencyCallback(latency);
+        }
 
         if (this.callback) {
           this.callback(orderbook);
@@ -153,15 +176,22 @@ export class BinanceWebSocketRepository implements IOrderbookRepository {
     }
 
     this.reconnectAttempts++;
+    const backoffDelay = this.getExponentialBackoffDelay(this.reconnectAttempts);
+    
     console.log(
-      `[WebSocket] Reconnecting... (attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`
+      `[WebSocket] Reconnecting in ${backoffDelay}ms... (attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`
     );
 
     this.reconnectTimeout = setTimeout(() => {
       if (this.currentSymbol) {
         this.setupWebSocket(this.currentSymbol);
       }
-    }, this.RECONNECT_DELAY);
+    }, backoffDelay);
+  }
+
+  private getExponentialBackoffDelay(attempt: number): number {
+    const delay = this.BASE_RECONNECT_DELAY * Math.pow(2, attempt - 1);
+    return Math.min(delay, this.MAX_RECONNECT_DELAY);
   }
 
   private disconnect(): void {

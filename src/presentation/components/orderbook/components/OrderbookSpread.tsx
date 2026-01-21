@@ -5,8 +5,15 @@ interface OrderbookSpreadProps {
 }
 
 export function OrderbookSpread({ orderbook }: OrderbookSpreadProps) {
+  const spreadLabel = `Spread: ${orderbook.spread.toFixed(2)} (${orderbook.spreadPercentage.toFixed(3)}%)`;
+  
   return (
-    <div className="border-y border-border/50 bg-[#0f0f0f] px-3 py-2 shrink-0">
+    <div 
+      className="border-y border-border/50 bg-[#0f0f0f] px-3 py-2 shrink-0" 
+      data-testid="orderbook-spread"
+      role="status"
+      aria-label={spreadLabel}
+    >
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold text-text-muted tracking-wide">
           Spread

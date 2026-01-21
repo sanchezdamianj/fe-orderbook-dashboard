@@ -11,21 +11,23 @@ describe("OrderbookHeader", () => {
     render(<OrderbookHeader />);
 
     expect(screen.getByText("Price")).toBeInTheDocument();
-    expect(screen.getByText("Amount")).toBeInTheDocument();
-    expect(screen.getByText("Total")).toBeInTheDocument();
+    expect(screen.getByText("Quantity")).toBeInTheDocument();
   });
 
-  it("should have grid layout", () => {
+  it("should have grid layout with 2 columns", () => {
     const { container } = render(<OrderbookHeader />);
     const header = container.firstChild;
 
-    expect(header).toHaveClass("grid", "grid-cols-3");
+    expect(header).toHaveClass("grid", "grid-cols-2");
   });
 
-  it("should be sticky", () => {
+  it("should have role attributes for accessibility", () => {
     const { container } = render(<OrderbookHeader />);
     const header = container.firstChild;
 
-    expect(header).toHaveClass("sticky", "top-0");
+    expect(header).toHaveAttribute("role", "row");
+    
+    const headers = container.querySelectorAll('[role="columnheader"]');
+    expect(headers).toHaveLength(2);
   });
 });

@@ -3,6 +3,8 @@ export const API_CONFIG = {
   ORDERBOOK_LIMIT: 20,
   POLL_INTERVAL: 1500,
   TIMEOUT: 5000,
+  STALE_DATA_THRESHOLD: 5000,
+  WS_BASE_URL: "wss://stream.binance.com:9443/ws",
 } as const;
 
 export const DISPLAY_CONFIG = {
@@ -30,5 +32,13 @@ export class ApiConfig {
 
   static getVisibleLevels(): number {
     return DISPLAY_CONFIG.VISIBLE_LEVELS;
+  }
+
+  static getStaleDataThreshold(): number {
+    return API_CONFIG.STALE_DATA_THRESHOLD;
+  }
+
+  static getWebSocketBaseUrl(): string {
+    return API_CONFIG.WS_BASE_URL;
   }
 }

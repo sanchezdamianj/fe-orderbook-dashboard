@@ -21,6 +21,8 @@ interface OrderbookStoreState {
   hasFallback: boolean;
   hasShownFallbackNotice: boolean;
   retryAttempt: number;
+  lastUpdateTime: number | null;
+  latency: number | null;
 }
 
 interface OrderbookStoreActions {
@@ -52,6 +54,8 @@ export const useOrderbookStore = create<OrderbookStore>((set, get) => ({
   hasFallback: false,
   hasShownFallbackNotice: false,
   retryAttempt: 0,
+  lastUpdateTime: null,
+  latency: null,
 
   selectTradingPair: (pair: TradingPair) => {
     const response = selectUseCase.execute({ tradingPair: pair });
@@ -82,11 +86,16 @@ export const useOrderbookStore = create<OrderbookStore>((set, get) => ({
         error: response.error,
         isLoading: false,
         isConnected: true,
+        lastUpdateTime: Date.now(),
       });
 
       if (connectionMode === "websocket") {
         websocketRepository.subscribe((orderbook: Orderbook) => {
-          set({ orderbook, isConnected: true });
+          set({ orderbook, isConnected: true, lastUpdateTime: Date.now() });
+        });
+        
+        websocketRepository.setLatencyCallback((latency: number) => {
+          set({ latency });
         });
         
         websocketRepository.setErrorCallback((error: Error) => {
